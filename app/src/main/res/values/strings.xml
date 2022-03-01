@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TOTPAndroid</string>
+    <string name="title_authenticators">Authenticators</string>
+    <string name="title_settings">Einstellungen</string>
+
+    <string name="settings_import_codes">IMPORT CODES</string>
+    <string name="settings_export_codes">EXPORT CODES</string>
+    <string name="settings_info">
+        Hier können Konten exportiert und importiert werden.
+        Das Format ist nur mit OTPAndroid kompatibel.
+    </string>
+
+    <string name="authenticators_show_codes">Codes anzeigen/verstecken</string>
+    <string name="authenticators_add_code">Konto hinzufügen</string>
+</resources>

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="de.bofloos.totpandroid">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
     <application
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
@@ -9,6 +10,12 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/Theme.TOTPAndroid">
+        <activity
+                android:name=".QRScannerActivity"
+                android:exported="true"/>
+        <activity
+                android:name=".ManualCodeCreationActivity"
+                android:exported="true"/>
         <activity
                 android:name=".MainActivity"
                 android:exported="true"

@@ -12,7 +12,7 @@ import de.bofloos.totpandroid.databinding.ActivityMainBinding;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 
@@ -32,13 +32,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
-        //Farbe der ActionBar für alle Views/Fragmente setzen
-        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.topbar)));
-
-        //Farbe der Statusbar unabhängig des Nachtmodus setzen
-        getWindow().setStatusBarColor(getResources().getColor(R.color.black));
     }
 
 }

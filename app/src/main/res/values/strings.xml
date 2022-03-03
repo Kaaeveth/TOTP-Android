@@ -12,4 +12,7 @@
 
     <string name="authenticators_show_codes">Codes anzeigen/verstecken</string>
     <string name="authenticators_add_code">Konto hinzufügen</string>
+
+    <string name="qr_scan">Manuell eingeben</string>
+    <string name="codecreate_issuer">Issuer</string>
 </resources>

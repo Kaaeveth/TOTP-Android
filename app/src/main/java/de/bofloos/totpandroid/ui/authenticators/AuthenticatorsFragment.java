@@ -3,17 +3,29 @@ package de.bofloos.totpandroid.ui.authenticators;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.*;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.bofloos.totpandroid.R;
+import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.qrscanner.QRScannerActivity;
 import de.bofloos.totpandroid.qrscanner.ScanResult;
 import org.jetbrains.annotations.NotNull;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class AuthenticatorsFragment extends Fragment {
 
@@ -22,12 +34,21 @@ public class AuthenticatorsFragment extends Fragment {
 
     AuthenticatorsViewModel viewModel;
 
+    Executor taskQueue = Executors.newSingleThreadExecutor();
+
+    RecyclerView authenticatorList;
+    AuthenticatorsListAdapter listAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-        viewModel = new ViewModelProvider(requireActivity()).get(AuthenticatorsViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity(), new AuthenticatorsViewModelFactory(requireContext()))
+                .get(AuthenticatorsViewModel.class);
+
+        // Gebraucht für Toasts
+        taskQueue.execute(Looper::prepare);
     }
 
     @Override
@@ -44,6 +65,13 @@ public class AuthenticatorsFragment extends Fragment {
             Intent qrScanner = new Intent(requireContext(), QRScannerActivity.class);
             startActivityForResult(qrScanner, QR_REQUEST_CODE);
         });
+
+        // Authenticator List vorbereiten
+        authenticatorList = v.findViewById(R.id.authList);
+        authenticatorList.setHasFixedSize(true);
+        authenticatorList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        listAdapter = new AuthenticatorsListAdapter(viewModel.getAccountRepo().getAllAccounts(), getViewLifecycleOwner());
+        authenticatorList.setAdapter(listAdapter);
     }
 
     @Override
@@ -55,12 +83,34 @@ public class AuthenticatorsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if(requestCode != QR_REQUEST_CODE || resultCode != Activity.RESULT_OK || data == null) {
-            Toast.makeText(requireContext(), "Fehler: "+resultCode, Toast.LENGTH_LONG).show();
+            showMsg("Fehler: "+resultCode);
             return;
         }
 
         ScanResult res = data.getParcelableExtra("RESULT");
         Log.d(TAG, "ScanResult "+res);
+
+        taskQueue.execute(() -> {
+            try {
+                boolean ok;
+                if(res.isUriResult()) {
+                    ok = viewModel.createAccount(new URI(res.getUri()));
+                } else {
+                    ok = viewModel.createAccount(res.getAccount(), res.getIssuer(), res.getSecret());
+                }
+                if(!ok)
+                    showMsg("Das Konto existiert bereits oder der Code ist ungültig");
+                else
+                    showMsg("Erfolg");
+            } catch (URISyntaxException e) {
+                showMsg("Ungültiger QR-Code Inhalt");
+            }
+        });
+    }
+
+    private void showMsg(String msg) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
     }
 }

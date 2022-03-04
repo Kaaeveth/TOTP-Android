@@ -16,4 +16,11 @@
             tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck"
             app:backgroundTint="@color/material_on_surface_stroke"
             android:contentDescription="@string/authenticators_add_code" app:fabSize="mini"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="409dp"
+            android:layout_height="610dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" android:id="@+id/authList"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

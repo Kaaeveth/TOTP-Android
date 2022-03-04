@@ -1,6 +1,7 @@
 package de.bofloos.totpandroid.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -16,6 +17,23 @@ import androidx.room.PrimaryKey;
  */
 @Entity
 public class Account {
+
+    public Account(@NonNull String label, String issuer, String secret, OTPHashAlgorithms hashAlg, short period) {
+        this.label = label;
+        this.issuer = issuer;
+        this.secret = secret;
+        this.hashAlg = hashAlg;
+        this.period = period;
+    }
+
+    public Account() {
+        label = "";
+    }
+
+    @Override
+    public boolean equals(@Nullable @org.jetbrains.annotations.Nullable Object obj) {
+        return obj instanceof Account && label.equals(((Account) obj).label);
+    }
 
     @PrimaryKey
     @NonNull
@@ -37,12 +55,6 @@ public class Account {
      */
     @ColumnInfo(name = "hashAlg")
     public OTPHashAlgorithms hashAlg;
-
-    /**
-     * UNIX Zeit der Erstellung des Secrets in ms
-     */
-    @ColumnInfo(name = "T0")
-    public long T0;
 
     /**
      * Wie lange ein OTP gültig ist in Sekunden.

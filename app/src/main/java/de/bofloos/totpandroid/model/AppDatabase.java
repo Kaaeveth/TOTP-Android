@@ -15,8 +15,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase db;
 
-    /** Stellt die Datenbank als Singleton zur Verfügung
-     * @param cxt - Der Kontext der Anwendung / Activity (kann über getApplicationContext() erhalten werden
+    /**
+     * Stellt die Datenbank als Singleton zur Verfügung
+     * @param cxt - Der Kontext der Anwendung / Activity (kann über getApplicationContext() erhalten werden)
      * */
     public static AppDatabase getInstance(Context cxt){
         if(db == null)

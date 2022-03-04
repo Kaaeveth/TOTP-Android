@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_chevron_right.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_edit.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
@@ -14,6 +15,7 @@
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner_manual.xml" value="0.365625" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/authenticators_list_item.xml" value="0.365625" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators.xml" value="0.34193840579710144" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_dashboard.xml" value="0.34193840579710144" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_settings.xml" value="0.34193840579710144" />

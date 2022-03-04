@@ -11,10 +11,10 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.TOTPAndroid">
         <activity
-                android:name=".QRScannerActivity"
+                android:name=".qrscanner.QRScannerActivity"
                 android:exported="true"/>
         <activity
-                android:name=".ManualCodeCreationActivity"
+                android:name=".qrscanner.ManualCodeCreationActivity"
                 android:exported="true"/>
         <activity
                 android:name=".MainActivity"

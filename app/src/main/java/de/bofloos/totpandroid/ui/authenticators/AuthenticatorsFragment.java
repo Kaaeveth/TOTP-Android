@@ -11,7 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.bofloos.totpandroid.R;
-import de.bofloos.totpandroid.QRScannerActivity;
+import de.bofloos.totpandroid.qrscanner.QRScannerActivity;
+import de.bofloos.totpandroid.qrscanner.ScanResult;
 import org.jetbrains.annotations.NotNull;
 
 public class AuthenticatorsFragment extends Fragment {
@@ -25,22 +26,25 @@ public class AuthenticatorsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
         viewModel = new ViewModelProvider(requireActivity()).get(AuthenticatorsViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_authenticators, container, false);
         setupViewElements(v);
         return v;
     }
 
     private void setupViewElements(View v) {
+        // FAB auf QR-Scanner setzten
         v.findViewById(R.id.addCodeBtn).setOnClickListener(l -> {
             Intent qrScanner = new Intent(requireContext(), QRScannerActivity.class);
+            // Die Activity nicht in den Verlauf packen, damit der User nicht zu dieser zurücknavigieren kann.
+            // Dies ist wichtig für das richtige Verhalten der ManualCodeCreationActivity.
+            qrScanner.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivityForResult(qrScanner, QR_REQUEST_CODE);
         });
     }
@@ -58,8 +62,8 @@ public class AuthenticatorsFragment extends Fragment {
             Toast.makeText(requireContext(), "Fehler: "+resultCode, Toast.LENGTH_LONG).show();
             return;
         }
-
-        String uri = data.getStringExtra("RESULT");
-        Log.d(TAG, "OTP URI: "+uri);
+        // todo: fix manual return
+        ScanResult res = data.getParcelableExtra("RESULT");
+        Log.d(TAG, "ScanResult "+res);
     }
 }

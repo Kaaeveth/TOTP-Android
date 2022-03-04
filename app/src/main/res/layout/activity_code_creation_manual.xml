@@ -13,32 +13,36 @@
             android:id="@+id/issuerInput"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="32dp" android:minHeight="48dp"
-            android:textColor="@color/white" android:inputType="text" android:hint="@string/codecreate_issuer"
-            android:textColorHint="@color/white"/>
+            android:textColor="@color/white" android:inputType="text" android:hint="@string/code_create_issuer"
+            android:textColorHint="@color/white" style="@style/Widget.AppCompat.EditText"
+            android:textColorLink="@color/purple_500" android:tooltipText="@string/code_create_issuer_tooltip"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Name"
             android:ems="10"
             android:id="@+id/accountInput"
             app:layout_constraintStart_toStartOf="@+id/issuerInput"
             app:layout_constraintTop_toBottomOf="@+id/issuerInput" android:layout_marginTop="24dp"
-            android:minHeight="48dp"/>
+            android:minHeight="48dp" android:textColor="@color/white" android:hint="@string/code_create_account"
+            android:textColorHint="@color/white" android:textColorLink="@color/purple_500"
+            android:tooltipText="@string/code_create_account_tooltip"/>
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Name"
             android:ems="10"
             android:id="@+id/secretInput"
             app:layout_constraintStart_toStartOf="@+id/issuerInput"
             app:layout_constraintTop_toBottomOf="@+id/accountInput" android:layout_marginTop="24dp"
-            android:minHeight="48dp"/>
+            android:minHeight="48dp" android:textColor="@color/white" android:textColorHint="@color/white"
+            android:hint="@string/code_create_secret" android:textColorLink="@color/purple_500"
+            android:tooltipText="@string/code_create_secret_tooltip"/>
     <Button
-            android:text="Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/saveBtn"
             app:layout_constraintStart_toStartOf="@+id/issuerInput"
-            app:layout_constraintTop_toBottomOf="@+id/secretInput" android:layout_marginTop="24dp"/>
+            app:layout_constraintTop_toBottomOf="@+id/secretInput" android:layout_marginTop="24dp"
+            android:text="@string/code_create_save" tools:text="@string/code_create_save"
+            android:textColor="@color/white"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

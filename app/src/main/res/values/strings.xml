@@ -14,5 +14,11 @@
     <string name="authenticators_add_code">Konto hinzufügen</string>
 
     <string name="qr_scan">Manuell eingeben</string>
-    <string name="codecreate_issuer">Issuer</string>
+    <string name="code_create_issuer">Issuer</string>
+    <string name="code_create_save">Speichern</string>
+    <string name="code_create_account">Account</string>
+    <string name="code_create_secret">Secret</string>
+    <string name="code_create_issuer_tooltip">Der Anbieter des Kontos, z.B. Amazon, Google, …</string>
+    <string name="code_create_account_tooltip">Ein eindeutiger Identifizierer/Name des Kontos, z.B. test@gmail.com</string>
+    <string name="code_create_secret_tooltip">Der geheime Schlüssel, welcher von Ihrem Kontoanbieter gegeben wird.</string>
 </resources>

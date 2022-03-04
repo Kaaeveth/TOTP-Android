@@ -1,4 +1,4 @@
-package de.bofloos.totpandroid;
+package de.bofloos.totpandroid.qrscanner;
 
 import android.Manifest;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.Preview;
@@ -21,10 +22,11 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
+import de.bofloos.totpandroid.BaseActivity;
+import de.bofloos.totpandroid.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -32,9 +34,9 @@ import java.util.concurrent.Executors;
 /**
  * Activity für das Scannen von QR-Codes.
  *
- * Rendert während des Scannens eine Preview der Kamera und gibt das Ergebnis im Intent als String mit Key
+ * Rendert während des Scannens eine Preview der Kamera und gibt das Ergebnis im Intent als {@code ScanResult} mit Key
  * {@code RESULT} zurück wenn der ResultCode {@code RESULT_OK} ist.
- * Das Result kann {@code null} oder keine gültige URI sein.
+ * Das Result kann eine URI oder einzelne Felder sein, je nachdem ob das Konto manuell angelegt worden ist.
  * <br>
  * Sobald ein QR-Code mit Text-Inhalt erkannt wird, beendet die Activity.
  * <br>
@@ -59,11 +61,11 @@ public class QRScannerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscanner);
 
-        // TODO: fix activity finish
         findViewById(R.id.manualBtn).setOnClickListener(l -> {
             Intent manualCodeIntent = new Intent(this, ManualCodeCreationActivity.class);
-            manualCodeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(manualCodeIntent);
+            // Momentane Aktivität ersetzen
+            manualCodeIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY /*| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP*/);
+            startActivityForResult(manualCodeIntent, 1337);
         });
 
         res = getIntent();
@@ -90,14 +92,14 @@ public class QRScannerActivity extends BaseActivity {
             try {
                 ProcessCameraProvider cameraProvider = futureCameraProvider.get();
                 CameraSelector cameraSelector = new CameraSelector.Builder()
-                        .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                        .requireLensFacing(CameraSelector.LENS_FACING_BACK) // Hintere Kamera
                         .build();
 
                 // Preview vorbereiten
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
-                //QR Scanner vorbereiten
+                // QR Scanner vorbereiten
                 ImageAnalysis qrScanner = generateQRScanner();
 
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, qrScanner);
@@ -122,6 +124,7 @@ public class QRScannerActivity extends BaseActivity {
             if(mediaImage == null)
                 return;
             InputImage inputImage = InputImage.fromMediaImage(mediaImage, image.getImageInfo().getRotationDegrees());
+            // QR Code erkennen
             scanner.process(inputImage)
                     .addOnSuccessListener(barcodes -> {
                         for(Barcode code : barcodes) {
@@ -146,7 +149,8 @@ public class QRScannerActivity extends BaseActivity {
         if(code.getValueType() != Barcode.TYPE_TEXT)
             return;
 
-        res.putExtra("RESULT", code.getRawValue());
+        ScanResult scanResult = new ScanResult(code.getRawValue());
+        res.putExtra("RESULT", scanResult);
         setResult(RESULT_OK, res);
         finish();
     }

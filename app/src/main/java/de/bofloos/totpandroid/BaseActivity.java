@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -59,15 +60,13 @@ public class BaseActivity extends AppCompatActivity {
         if(authPrompt != null)
             return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("Authentifizierung")
-                    .setAllowedAuthenticators(BIOMETRIC_STRONG | DEVICE_CREDENTIAL | BIOMETRIC_WEAK)
-                    .build();
-        }
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Authentifizierung")
+                .setAllowedAuthenticators(BIOMETRIC_STRONG | DEVICE_CREDENTIAL | BIOMETRIC_WEAK)
+                .build();
 
         //TODO: handle error
-        authPrompt = new BiometricPrompt(this, getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
+        authPrompt = new BiometricPrompt(this, ContextCompat.getMainExecutor(this), new BiometricPrompt.AuthenticationCallback() {
             @Override
             public void onAuthenticationError(int errorCode, @NonNull @NotNull CharSequence errString) {
                 super.onAuthenticationError(errorCode, errString);
@@ -88,7 +87,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(startedActivities == 1)
+        if(startedActivities == 1) // Benutzer ist von außerhalb in die Anwendung gekommen
             authPrompt.authenticate(promptInfo);
     }
 

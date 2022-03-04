@@ -10,6 +10,7 @@
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_plus.xml" value="0.38177083333333334" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_settings.xml" value="0.38177083333333334" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_code_creation_manual.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner_manual.xml" value="0.365625" />

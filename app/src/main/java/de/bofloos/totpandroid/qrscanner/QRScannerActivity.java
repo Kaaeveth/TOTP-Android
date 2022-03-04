@@ -1,6 +1,7 @@
 package de.bofloos.totpandroid.qrscanner;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
@@ -47,9 +48,12 @@ public class QRScannerActivity extends BaseActivity {
 
     public static final String TAG = QRScannerActivity.class.getName();
     public static final int ABORT_NO_PERMISSION = 420;
+
     private static final int PERMISSIONS_REQUEST_CODE = 42;
+    private static final int MANUAL_REQUEST_CODE = 1337;
 
     Intent res;
+    ProcessCameraProvider cameraProvider;
     Executor qrScannerExecutor = Executors.newSingleThreadExecutor();
 
     public QRScannerActivity() {
@@ -61,11 +65,11 @@ public class QRScannerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscanner);
 
+        /* Manuelle Konten-Erstellung anlegen
+         * Kamera und alle gebundenen Ressourcen müssen, wegen dem Lifecycle-Binding, nicht explizit aufgeräumt werden.*/
         findViewById(R.id.manualBtn).setOnClickListener(l -> {
             Intent manualCodeIntent = new Intent(this, ManualCodeCreationActivity.class);
-            // Momentane Aktivität ersetzen
-            manualCodeIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY /*| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP*/);
-            startActivityForResult(manualCodeIntent, 1337);
+            startActivityForResult(manualCodeIntent, MANUAL_REQUEST_CODE);
         });
 
         res = getIntent();
@@ -90,7 +94,7 @@ public class QRScannerActivity extends BaseActivity {
         ListenableFuture<ProcessCameraProvider> futureCameraProvider = ProcessCameraProvider.getInstance(this);
         futureCameraProvider.addListener(() -> {
             try {
-                ProcessCameraProvider cameraProvider = futureCameraProvider.get();
+                cameraProvider = futureCameraProvider.get();
                 CameraSelector cameraSelector = new CameraSelector.Builder()
                         .requireLensFacing(CameraSelector.LENS_FACING_BACK) // Hintere Kamera
                         .build();
@@ -102,6 +106,7 @@ public class QRScannerActivity extends BaseActivity {
                 // QR Scanner vorbereiten
                 ImageAnalysis qrScanner = generateQRScanner();
 
+                // Ressourcen an Lifecycle der Activity binden, damit das Framework diese automatisch freigibt.
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, qrScanner);
 
             } catch (ExecutionException | InterruptedException ignored) {}
@@ -168,5 +173,15 @@ public class QRScannerActivity extends BaseActivity {
         }
         // Permission erhalten -> mit setup fortfahren
         setup();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Ergebnis der ManualCodeCreationActivity zum Parent propagieren
+        if(requestCode == MANUAL_REQUEST_CODE) {
+            setResult(resultCode, data);
+            finish();
+        }
     }
 }

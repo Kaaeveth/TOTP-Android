@@ -42,9 +42,6 @@ public class AuthenticatorsFragment extends Fragment {
         // FAB auf QR-Scanner setzten
         v.findViewById(R.id.addCodeBtn).setOnClickListener(l -> {
             Intent qrScanner = new Intent(requireContext(), QRScannerActivity.class);
-            // Die Activity nicht in den Verlauf packen, damit der User nicht zu dieser zurücknavigieren kann.
-            // Dies ist wichtig für das richtige Verhalten der ManualCodeCreationActivity.
-            qrScanner.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivityForResult(qrScanner, QR_REQUEST_CODE);
         });
     }
@@ -62,7 +59,7 @@ public class AuthenticatorsFragment extends Fragment {
             Toast.makeText(requireContext(), "Fehler: "+resultCode, Toast.LENGTH_LONG).show();
             return;
         }
-        // todo: fix manual return
+
         ScanResult res = data.getParcelableExtra("RESULT");
         Log.d(TAG, "ScanResult "+res);
     }

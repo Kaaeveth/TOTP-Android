@@ -20,20 +20,21 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
 
     // Die momentan geladenen Konten
     List<Account> currentAccounts;
+    AccountClickListener onItemListener;
 
     public AuthenticatorsListAdapter(LiveData<List<Account>> accountDao, LifecycleOwner lifecycleOwner) {
         accountDao.observe(lifecycleOwner, a -> {
             List<Account> old = currentAccounts;
             currentAccounts = a;
 
-            if(old == null)
+            /*if(old == null)
                 notifyDataSetChanged();
             else if(old.size() < a.size()) {
                 notifyItemRangeInserted(old.size(), a.size()-old.size());
             } else {
                 // todo: remove case
-            }
-            //notifyDataSetChanged();
+            }*/
+            notifyDataSetChanged();
         });
     }
 
@@ -51,10 +52,13 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         Account acc = currentAccounts.get(position);
         holder.issuerTv.setText(acc.issuer);
         holder.accountTv.setText(acc.label);
-        // todo: edit activity and code
-        /*holder.layout.setOnClickListener(l -> {
+        // todo: otp code
+        holder.layout.setOnClickListener(l -> onItemListener.onAccountClick(acc));
+    }
 
-        });*/
+    public void setOnClickListener(AccountClickListener l) {
+        this.onItemListener = l;
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     @Override
@@ -64,6 +68,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         return currentAccounts == null ? 0 : currentAccounts.size();
     }
 
+    // todo: show codes
     public void showCodes(boolean show) {
 
     }

@@ -6,6 +6,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 /**
  * Schema für ein TOTP Konto:
  * <br>
@@ -16,7 +18,7 @@ import androidx.room.PrimaryKey;
  * Die Anzahl der Ziffern wird ignoriert.
  */
 @Entity
-public class Account {
+public class Account implements Serializable {
 
     public Account(@NonNull String label, String issuer, String secret, OTPHashAlgorithms hashAlg, short period) {
         this.label = label;

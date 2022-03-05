@@ -3,10 +3,11 @@ package de.bofloos.totpandroid.model;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Dao
-public interface AccountDao {
+public interface AccountDao extends Serializable {
 
     @Query("select * from Account")
     LiveData<List<Account>> getAllAccounts();

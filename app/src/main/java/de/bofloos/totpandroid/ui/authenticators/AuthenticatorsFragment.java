@@ -3,7 +3,6 @@ package de.bofloos.totpandroid.ui.authenticators;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.*;
@@ -11,19 +10,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.bofloos.totpandroid.R;
-import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.qrscanner.QRScannerActivity;
 import de.bofloos.totpandroid.qrscanner.ScanResult;
+import de.bofloos.totpandroid.ui.authenticators.detail.AuthenticatorsDetailActivity;
+import de.bofloos.totpandroid.util.EventQueue;
+import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
+import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModelFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -33,8 +33,6 @@ public class AuthenticatorsFragment extends Fragment {
     static final String TAG = AuthenticatorsFragment.class.getName();
 
     AuthenticatorsViewModel viewModel;
-
-    Executor taskQueue = Executors.newSingleThreadExecutor();
 
     RecyclerView authenticatorList;
     AuthenticatorsListAdapter listAdapter;
@@ -46,9 +44,6 @@ public class AuthenticatorsFragment extends Fragment {
         setHasOptionsMenu(true);
         viewModel = new ViewModelProvider(requireActivity(), new AuthenticatorsViewModelFactory(requireContext()))
                 .get(AuthenticatorsViewModel.class);
-
-        // Gebraucht für Toasts
-        taskQueue.execute(Looper::prepare);
     }
 
     @Override
@@ -70,7 +65,12 @@ public class AuthenticatorsFragment extends Fragment {
         authenticatorList = v.findViewById(R.id.authList);
         authenticatorList.setHasFixedSize(true);
         authenticatorList.setLayoutManager(new LinearLayoutManager(requireContext()));
+
         listAdapter = new AuthenticatorsListAdapter(viewModel.getAccountRepo().getAllAccounts(), getViewLifecycleOwner());
+        listAdapter.setOnClickListener(acc -> {
+            Intent detailIntent = AuthenticatorsDetailActivity.newIntent(acc, requireContext());
+            startActivity(detailIntent);
+        });
         authenticatorList.setAdapter(listAdapter);
     }
 
@@ -92,7 +92,7 @@ public class AuthenticatorsFragment extends Fragment {
         ScanResult res = data.getParcelableExtra("RESULT");
         Log.d(TAG, "ScanResult "+res);
 
-        taskQueue.execute(() -> {
+        EventQueue.getInstance().post(() -> {
             try {
                 boolean ok;
                 if(res.isUriResult()) {

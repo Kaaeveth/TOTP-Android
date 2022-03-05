@@ -1,4 +1,4 @@
-package de.bofloos.totpandroid.ui.authenticators;
+package de.bofloos.totpandroid.viewmodel;
 
 import android.content.Context;
 import androidx.annotation.NonNull;

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_chevron_right.xml" value="0.3828125" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_delete.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_edit.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
@@ -11,14 +12,17 @@
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_plus.xml" value="0.38177083333333334" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/drawable/ic_settings.xml" value="0.38177083333333334" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_authenticators_detail.xml" value="0.35260416666666666" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_code_creation_manual.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner_manual.xml" value="0.365625" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/authenticators_list_item.xml" value="0.365625" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators.xml" value="0.34193840579710144" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators_detail.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_dashboard.xml" value="0.34193840579710144" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_settings.xml" value="0.34193840579710144" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/menu/authenticators_detail_menu.xml" value="0.38125" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/menu/authenticators_menu.xml" value="0.3802083333333333" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/menu/bottom_nav_menu.xml" value="0.38125" />
       </map>

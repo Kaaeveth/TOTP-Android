@@ -1,4 +1,4 @@
-package de.bofloos.totpandroid.ui.authenticators;
+package de.bofloos.totpandroid.viewmodel;
 
 import android.text.TextUtils;
 import androidx.lifecycle.LiveData;

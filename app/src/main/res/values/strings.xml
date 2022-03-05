@@ -19,6 +19,12 @@
     <string name="code_create_account">Account</string>
     <string name="code_create_secret">Secret</string>
     <string name="code_create_issuer_tooltip">Der Anbieter des Kontos, z.B. Amazon, Google, …</string>
-    <string name="code_create_account_tooltip">Ein eindeutiger Identifizierer/Name des Kontos, z.B. test@gmail.com</string>
-    <string name="code_create_secret_tooltip">Der geheime Schlüssel, welcher von Ihrem Kontoanbieter gegeben wird.</string>
+    <string name="code_create_account_tooltip">Ein eindeutiger Identifizierer/Name des Kontos, z.B. test@gmail.com
+    </string>
+    <string name="code_create_secret_tooltip">Der geheime Schlüssel, welcher von Ihrem Kontoanbieter gegeben wird.
+    </string>
+
+    <string name="code_detail_delete">Konto löschen</string>
+    <string name="code_detail_edit">Konto bearbeiten</string>
+    <string name="code_detail_code_info">CODE FÜR EINMALPASSWORT</string>
 </resources>

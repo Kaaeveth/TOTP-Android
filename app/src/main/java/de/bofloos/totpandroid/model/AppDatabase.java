@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase;
 
 /**
  * SQlite Datenbank Anbindung mittels Room
+ *
+ * Room erlaubt keine Zugriffe auf die Datenbank vom UI/Main-Thread aus.
+ * {@link de.bofloos.totpandroid.util.EventQueue} stellt eine Nachrichtenschleife für Zugriffe bereit.
  */
 @Database(entities = {Account.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {

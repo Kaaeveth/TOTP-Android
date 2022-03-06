@@ -3,10 +3,13 @@ package de.bofloos.totpandroid.ui.authenticators.detail;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.model.AccountDao;
@@ -26,13 +29,17 @@ public class AuthenticatorsDetailFragment extends Fragment {
     private Account acc;
     private AccountDao accountRepo;
 
+    private TextView issuerTv;
+    private TextView accountTv;
+    private TextView codeTv;
+    private ProgressBar validityBar;
+
     public AuthenticatorsDetailFragment() {}
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param acc Konto
      * @return A new instance of fragment AuthenticatorsDetailFragment.
      */
     public static AuthenticatorsDetailFragment newInstance(Account acc, AccountDao accountRepo) {
@@ -58,7 +65,20 @@ public class AuthenticatorsDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_authenticators_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_authenticators_detail, container, false);
+        issuerTv = v.findViewById(R.id.issuerDetailTv);
+        accountTv = v.findViewById(R.id.accountDetailTv);
+        codeTv = v.findViewById(R.id.codeDetailTv);
+        validityBar = v.findViewById(R.id.validityBar);
+        setupDetail();
+
+        return v;
+    }
+
+    private void setupDetail() {
+        issuerTv.setText(acc.issuer);
+        accountTv.setText(acc.label);
+
     }
 
     @Override
@@ -82,7 +102,11 @@ public class AuthenticatorsDetailFragment extends Fragment {
                     .setNegativeButton("Abbrechen", (dialogInterface, i) -> dialogInterface.cancel())
                     .show();
         } else if(itemId == R.id.edit_button) {
-            //todo: edit fragment
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_detail_container, AuthenticatorsEditFragment.newInstance(acc, accountRepo))
+                    .addToBackStack(null)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
         } else {
             Log.d(getClass().getName(), "Unbekannte ItemId erhalten");
         }

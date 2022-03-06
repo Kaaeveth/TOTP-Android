@@ -23,18 +23,21 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
     AccountClickListener onItemListener;
 
     public AuthenticatorsListAdapter(LiveData<List<Account>> accountDao, LifecycleOwner lifecycleOwner) {
+        // Observer für Account Änderungen
         accountDao.observe(lifecycleOwner, a -> {
             List<Account> old = currentAccounts;
             currentAccounts = a;
 
-            /*if(old == null)
+            /* Wenn das erste Mal die Liste updated wird oder Elemente gelöscht wurden
+               können wir nicht effektiv die Vorher/Nachher-Änderung festellen -> Liste neu aufbauen*/
+            if(old == null || old.size() > a.size())
                 notifyDataSetChanged();
-            else if(old.size() < a.size()) {
+            else if(old.size() == a.size()) { // Bestehende Konten haben sich geändert
+                notifyItemRangeChanged(0, getItemCount());
+            } else /*if(old.size() < a.size())*/ {
+                // Neue Elemente wurde eingefügt. Elemente werden am Ende der Liste angenommen für effektiveres updaten
                 notifyItemRangeInserted(old.size(), a.size()-old.size());
-            } else {
-                // todo: remove case
-            }*/
-            notifyDataSetChanged();
+            }
         });
     }
 
@@ -58,7 +61,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
 
     public void setOnClickListener(AccountClickListener l) {
         this.onItemListener = l;
-        notifyItemRangeChanged(0, getItemCount());
+        notifyItemRangeChanged(0, getItemCount()); // Click Listener für jedes Element updaten
     }
 
     @Override

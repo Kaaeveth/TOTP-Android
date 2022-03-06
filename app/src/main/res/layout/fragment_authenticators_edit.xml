@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   tools:context=".ui.authenticators.detail.AuthenticatorsEditFragment"
+                                                   android:background="@color/backdrop">
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" android:id="@+id/textInputLayout"
+            android:layout_marginStart="24dp" android:layout_marginTop="24dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="24dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/code_create_issuer" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/issuerEdit"
+                android:textColorHint="@color/white" android:textColorLink="@color/purple_500"
+                android:tooltipText="@string/code_create_issuer_tooltip"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+    <Button
+            android:text="@string/code_create_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/saveEditBtn"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" android:layout_marginTop="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

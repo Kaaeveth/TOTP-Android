@@ -58,4 +58,6 @@ dependencies {
     implementation "androidx.camera:camera-extensions:${camerax_version}"
 
     implementation "androidx.biometric:biometric:1.1.0"
+
+    implementation 'commons-codec:commons-codec:1.15'
 }

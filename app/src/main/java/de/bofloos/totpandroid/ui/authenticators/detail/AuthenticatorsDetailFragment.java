@@ -1,19 +1,20 @@
 package de.bofloos.totpandroid.ui.authenticators.detail;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
-import de.bofloos.totpandroid.model.AccountDao;
 import de.bofloos.totpandroid.util.EventQueue;
+import de.bofloos.totpandroid.util.Util;
+import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
+import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModelFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,15 +25,10 @@ import org.jetbrains.annotations.NotNull;
 public class AuthenticatorsDetailFragment extends Fragment {
 
     private static final String ARG_ACC = "param1";
-    private static final String ARG_ACC_REPO = "param2";
 
     private Account acc;
-    private AccountDao accountRepo;
 
-    private TextView issuerTv;
-    private TextView accountTv;
-    private TextView codeTv;
-    private ProgressBar validityBar;
+    AuthenticatorsViewModel viewModel;
 
     public AuthenticatorsDetailFragment() {}
 
@@ -42,11 +38,10 @@ public class AuthenticatorsDetailFragment extends Fragment {
      *
      * @return A new instance of fragment AuthenticatorsDetailFragment.
      */
-    public static AuthenticatorsDetailFragment newInstance(Account acc, AccountDao accountRepo) {
+    public static AuthenticatorsDetailFragment newInstance(Account acc) {
         AuthenticatorsDetailFragment fragment = new AuthenticatorsDetailFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_ACC, acc);
-        args.putSerializable(ARG_ACC_REPO, accountRepo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,8 +51,10 @@ public class AuthenticatorsDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             acc = (Account) getArguments().getSerializable(ARG_ACC);
-            accountRepo = (AccountDao) getArguments().getSerializable(ARG_ACC_REPO);
         }
+
+        viewModel = new ViewModelProvider(requireActivity().getViewModelStore(), new AuthenticatorsViewModelFactory(requireActivity()))
+                .get(AuthenticatorsViewModel.class);
 
         setHasOptionsMenu(true);
     }
@@ -66,19 +63,17 @@ public class AuthenticatorsDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_authenticators_detail, container, false);
-        issuerTv = v.findViewById(R.id.issuerDetailTv);
-        accountTv = v.findViewById(R.id.accountDetailTv);
-        codeTv = v.findViewById(R.id.codeDetailTv);
-        validityBar = v.findViewById(R.id.validityBar);
-        setupDetail();
+        TextView issuerTv = v.findViewById(R.id.issuerDetailTv);
+        TextView accountTv = v.findViewById(R.id.accountDetailTv);
+        TextView codeTv = v.findViewById(R.id.codeDetailTv);
+        ProgressBar validityBar = v.findViewById(R.id.codeValidityBar);
 
-        return v;
-    }
-
-    private void setupDetail() {
         issuerTv.setText(acc.issuer);
         accountTv.setText(acc.label);
 
+        Util.setupCodeView(acc, validityBar, codeTv, requireActivity(), getViewLifecycleOwner());
+
+        return v;
     }
 
     @Override
@@ -96,19 +91,17 @@ public class AuthenticatorsDetailFragment extends Fragment {
                     .setTitle("Konto löschen")
                     .setMessage("Wollen Sie das Konto wirklich löschen?")
                     .setPositiveButton("Bestätigen", (dialogInterface, i) -> {
-                        EventQueue.getInstance().post(() -> accountRepo.deleteAccount(acc));
+                        EventQueue.getInstance().post(() -> viewModel.deleteAccount(acc));
                         requireActivity().finish();
                     })
                     .setNegativeButton("Abbrechen", (dialogInterface, i) -> dialogInterface.cancel())
                     .show();
         } else if(itemId == R.id.edit_button) {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_detail_container, AuthenticatorsEditFragment.newInstance(acc, accountRepo))
+            transaction.replace(R.id.fragment_detail_container, AuthenticatorsEditFragment.newInstance(acc, viewModel.getAccountRepo()))
                     .addToBackStack(null)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
-        } else {
-            Log.d(getClass().getName(), "Unbekannte ItemId erhalten");
         }
 
         return super.onOptionsItemSelected(item);

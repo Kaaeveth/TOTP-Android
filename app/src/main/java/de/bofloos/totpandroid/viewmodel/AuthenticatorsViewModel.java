@@ -1,11 +1,11 @@
 package de.bofloos.totpandroid.viewmodel;
 
 import android.text.TextUtils;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.bofloos.totpandroid.model.Account;
-import de.bofloos.totpandroid.model.AccountDao;
+import de.bofloos.totpandroid.model.AccountRepository;
 import de.bofloos.totpandroid.model.OTPHashAlgorithms;
+import de.bofloos.totpandroid.model.OneTimePassword;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 
 public class AuthenticatorsViewModel extends ViewModel {
 
-    private final AccountDao accountRepo;
+    private final AccountRepository accountRepo;
 
-    public AuthenticatorsViewModel(AccountDao accountRepo) {
+    public AuthenticatorsViewModel(AccountRepository accountRepo) {
         this.accountRepo = accountRepo;
     }
 
-    public AccountDao getAccountRepo() {
+    public AccountRepository getAccountRepo() {
         return accountRepo;
     }
 
@@ -36,9 +36,16 @@ public class AuthenticatorsViewModel extends ViewModel {
         return true;
     }
 
+    public void deleteAccount(Account acc) {
+        OneTimePassword.getInstance().removeOTPGenerator(acc.label);
+        accountRepo.deleteAccount(acc);
+    }
+
     /**
      * Erstellt ein neues Konto mittels einer URI.
      * <a href="https://github.com/google/google-authenticator/wiki/Key-Uri-Format}">Das Format der URI</a>
+     * <br>
+     * Darf nicht vom Main/UI-Thread aufgerufen werden.
      * <br>
      * {@link #createAccount(String, String, String, short, OTPHashAlgorithms)}
      * @param uri URI im angegeben Format
@@ -93,6 +100,7 @@ public class AuthenticatorsViewModel extends ViewModel {
     /**
      * Erstellt ein neues Konto und speichert dies persistent.
      * Als Periode wird 30 Sekunden und SHA1 als Hash-Algorithmus genommen.
+     * Darf nicht vom Main/UI-Thread aufgerufen werden.
      * @param label Das Label des Kontos. Muss einzigartig sein und hat i.d.R das Format
      *              {@code accountname / issuer (“:” / “%3A”) *”%20” accountname}
      * @param issuer Der Anbieter des Kontos. Sollte gleich sein mit dem Issuer im Label (wird aber nicht erzwungen).

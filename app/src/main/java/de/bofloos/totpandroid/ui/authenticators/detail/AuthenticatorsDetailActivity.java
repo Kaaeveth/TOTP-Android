@@ -19,7 +19,6 @@ public class AuthenticatorsDetailActivity extends BaseActivity {
     private static final String PARAM_ACCOUNT = "ACC";
 
     Account account;
-    AuthenticatorsViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +28,10 @@ public class AuthenticatorsDetailActivity extends BaseActivity {
         getSupportActionBar().setTitle("");
 
         account = (Account) getIntent().getSerializableExtra(PARAM_ACCOUNT);
-        viewModel = new ViewModelProvider(this, new AuthenticatorsViewModelFactory(this))
-                .get(AuthenticatorsViewModel.class);
 
         // Detail Fragment per default anzeigen
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_detail_container, AuthenticatorsDetailFragment.newInstance(account, viewModel.getAccountRepo()))
+        transaction.replace(R.id.fragment_detail_container, AuthenticatorsDetailFragment.newInstance(account))
                 .commit();
     }
 

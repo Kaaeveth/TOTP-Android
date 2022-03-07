@@ -1,10 +1,7 @@
 package de.bofloos.totpandroid.ui.authenticators.detail;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
-import de.bofloos.totpandroid.model.AccountDao;
+import de.bofloos.totpandroid.model.AccountRepository;
 import de.bofloos.totpandroid.util.EventQueue;
 
 /**
@@ -26,7 +23,7 @@ public class AuthenticatorsEditFragment extends Fragment {
     private static final String ARG_ACC_REPO = "accR";
 
     private Account account;
-    private AccountDao accountRepo;
+    private AccountRepository accountRepo;
 
     private EditText issuerEdit;
 
@@ -38,7 +35,7 @@ public class AuthenticatorsEditFragment extends Fragment {
      *
      * @return A new instance of fragment AuthenticatorsEditFragment.
      */
-    public static AuthenticatorsEditFragment newInstance(Account acc, AccountDao accountRepo) {
+    public static AuthenticatorsEditFragment newInstance(Account acc, AccountRepository accountRepo) {
         AuthenticatorsEditFragment fragment = new AuthenticatorsEditFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_ACC, acc);
@@ -52,7 +49,7 @@ public class AuthenticatorsEditFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             account = (Account) getArguments().getSerializable(ARG_ACC);
-            accountRepo = (AccountDao) getArguments().getSerializable(ARG_ACC_REPO);
+            accountRepo = (AccountRepository) getArguments().getSerializable(ARG_ACC_REPO);
         }
     }
 

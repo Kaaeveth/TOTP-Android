@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase;
 @Database(entities = {Account.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract AccountDao getAccountRepository();
+    public abstract AccountRepository getAccountRepository();
 
     private static AppDatabase db;
 

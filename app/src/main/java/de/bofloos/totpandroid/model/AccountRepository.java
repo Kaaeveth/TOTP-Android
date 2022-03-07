@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Dao
-public interface AccountDao extends Serializable {
+public interface AccountRepository extends Serializable {
 
     @Query("select * from Account")
     LiveData<List<Account>> getAllAccounts();

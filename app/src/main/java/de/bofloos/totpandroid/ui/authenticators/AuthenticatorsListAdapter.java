@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
+import de.bofloos.totpandroid.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
     // Die momentan geladenen Konten
     List<Account> currentAccounts;
     AccountClickListener onItemListener;
+    AccountCodeSetupListener onCodeSetupListener;
 
     public AuthenticatorsListAdapter(LiveData<List<Account>> accountDao, LifecycleOwner lifecycleOwner) {
         // Observer für Account Änderungen
@@ -55,13 +57,23 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         Account acc = currentAccounts.get(position);
         holder.issuerTv.setText(acc.issuer);
         holder.accountTv.setText(acc.label);
-        // todo: otp code
-        holder.layout.setOnClickListener(l -> onItemListener.onAccountClick(acc));
+
+        if(onItemListener != null)
+            holder.layout.setOnClickListener(l -> onItemListener.onAccountClick(acc));
+        if(onCodeSetupListener != null)
+            onCodeSetupListener.onCodeSetup(acc, holder.validityBar, holder.codeTv);
     }
 
-    public void setOnClickListener(AccountClickListener l) {
+    public void setOnClickListener(AccountClickListener l, boolean updateNow) {
         this.onItemListener = l;
-        notifyItemRangeChanged(0, getItemCount()); // Click Listener für jedes Element updaten
+        if(updateNow)
+            notifyItemRangeChanged(0, getItemCount()); // Click Listener für jedes Element updaten
+    }
+
+    public void setOnCodeSetupListener(AccountCodeSetupListener l, boolean updateNow) {
+        onCodeSetupListener = l;
+        if(updateNow)
+            notifyItemRangeChanged(0, getItemCount()); // Click Listener für jedes Element updaten
     }
 
     @Override

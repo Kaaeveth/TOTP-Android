@@ -12,12 +12,15 @@
             android:layout_marginStart="20dp" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp"/>
     <ProgressBar
-            style="?android:attr/progressBarStyle"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="36dp"
             android:layout_height="28dp"
+            android:useLevel="true"
             android:id="@+id/validityBar" android:layout_toEndOf="@+id/codeTv" android:layout_alignTop="@+id/codeTv"
             android:progressTint="@color/purple_500"
-            app:layout_constraintStart_toEndOf="@+id/codeTv" app:layout_constraintTop_toTopOf="@+id/codeTv"/>
+            app:layout_constraintStart_toEndOf="@+id/codeTv" app:layout_constraintTop_toTopOf="@+id/codeTv"
+            android:indeterminate="true"
+            android:layout_marginStart="8dp"/>
     <TextView
             android:text="TextView"
             android:layout_width="wrap_content"

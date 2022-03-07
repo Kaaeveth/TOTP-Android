@@ -18,6 +18,7 @@ import de.bofloos.totpandroid.qrscanner.QRScannerActivity;
 import de.bofloos.totpandroid.qrscanner.ScanResult;
 import de.bofloos.totpandroid.ui.authenticators.detail.AuthenticatorsDetailActivity;
 import de.bofloos.totpandroid.util.EventQueue;
+import de.bofloos.totpandroid.util.Util;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModelFactory;
 import org.jetbrains.annotations.NotNull;
@@ -70,7 +71,9 @@ public class AuthenticatorsFragment extends Fragment {
         listAdapter.setOnClickListener(acc -> {
             Intent detailIntent = AuthenticatorsDetailActivity.newIntent(acc, requireContext());
             startActivity(detailIntent);
-        });
+        }, false);
+        listAdapter.setOnCodeSetupListener((acc, validityBar, codeTv) ->
+                Util.setupCodeView(acc, validityBar, codeTv, requireActivity(), getViewLifecycleOwner()), true);
         authenticatorList.setAdapter(listAdapter);
     }
 

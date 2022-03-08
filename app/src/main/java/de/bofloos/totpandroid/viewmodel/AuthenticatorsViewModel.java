@@ -6,6 +6,7 @@ import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.model.AccountRepository;
 import de.bofloos.totpandroid.model.OTPHashAlgorithms;
 import de.bofloos.totpandroid.model.OneTimePassword;
+import org.apache.commons.codec.binary.Base32;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -26,12 +27,11 @@ public class AuthenticatorsViewModel extends ViewModel {
         return accountRepo;
     }
 
-    private boolean createAccount(String label, String issuer, String secret,
+    private boolean createAccount(String label, String issuer, byte[] secret,
                                   short period, OTPHashAlgorithms alg) {
         if(accountRepo.accountExists(label))
             return false;
 
-        //todo: encrypt secret
         accountRepo.insertAccount(new Account(label, issuer, secret, alg, period));
         return true;
     }
@@ -47,7 +47,7 @@ public class AuthenticatorsViewModel extends ViewModel {
      * <br>
      * Darf nicht vom Main/UI-Thread aufgerufen werden.
      * <br>
-     * {@link #createAccount(String, String, String, short, OTPHashAlgorithms)}
+     * {@link #createAccount(String, String, byte[], short, OTPHashAlgorithms)}
      * @param uri URI im angegeben Format
      * @return {@code false} wenn die URI ungültig ist oder das Konto bereits existiert
      */
@@ -86,15 +86,16 @@ public class AuthenticatorsViewModel extends ViewModel {
                 case "SHA512":
                     alg = OTPHashAlgorithms.SHA512;
                     break;
-                default:
-                    return false;
+                // default ist SHA1 - mit Initialisierung abgedeckt
             }
 
         String issuer = q.get("issuer");
+        // Wenn kein Issuer vorhanden, diesen aus dem Label ziehen
+        // Der RegEx oberhalb garantiert die Existenz eines solchen
         if(TextUtils.isEmpty(issuer))
             issuer = label.substring(0, label.indexOf(':'));
 
-        return createAccount(label, issuer, secret, period, alg);
+        return createAccount(label, issuer, new Base32().decode(secret), period, alg);
     }
 
     /**
@@ -108,7 +109,7 @@ public class AuthenticatorsViewModel extends ViewModel {
      * @return {@code true} wenn das Konto erfolgreich angelegt wurde.
      *         Dies ist nicht der Fall, wenn ein Konto mit dem gegebenen Label bereits existiert.
      */
-    public boolean createAccount(String label, String issuer, String secret) {
+    public boolean createAccount(String label, String issuer, byte[] secret) {
         return createAccount(label, issuer, secret, (short) 30, OTPHashAlgorithms.SHA1);
     }
 

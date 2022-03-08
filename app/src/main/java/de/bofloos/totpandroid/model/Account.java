@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Entity
 public class Account implements Serializable {
 
-    public Account(@NonNull String label, String issuer, String secret, OTPHashAlgorithms hashAlg, short period) {
+    public Account(@NonNull String label, String issuer, byte[] secret, OTPHashAlgorithms hashAlg, short period) {
         this.label = label;
         this.issuer = issuer;
         this.secret = secret;
@@ -47,10 +47,9 @@ public class Account implements Serializable {
 
     /**
      * Secret, welches für die Erstellung von OTPs verwendet wird.
-     * Wird verschlüsselt gespeichert
      */
-    @ColumnInfo(name = "secret")
-    public String secret;
+    @ColumnInfo(name = "secret", typeAffinity = ColumnInfo.BLOB)
+    public byte[] secret;
 
     /**
      * Ausgehandelter Hash Algorithmus für den HMAC

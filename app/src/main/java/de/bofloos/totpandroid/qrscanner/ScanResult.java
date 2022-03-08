@@ -56,6 +56,11 @@ public class ScanResult implements Parcelable {
         return account;
     }
 
+    /**
+     * Das Secret in Base32 codiert.
+     * Es wird keine Überprüfung vorgenommen, ob das Secret wirklich Base32 codiert ist.
+     * @return
+     */
     public String getSecret() {
         return secret;
     }

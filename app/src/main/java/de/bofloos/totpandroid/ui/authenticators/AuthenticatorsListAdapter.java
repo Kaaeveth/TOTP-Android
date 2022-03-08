@@ -7,12 +7,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
-import de.bofloos.totpandroid.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,9 +20,10 @@ import java.util.List;
 public class AuthenticatorsListAdapter extends RecyclerView.Adapter<AuthenticatorsListAdapter.AuthenticatorsViewHolder> {
 
     // Die momentan geladenen Konten
-    List<Account> currentAccounts;
-    AccountClickListener onItemListener;
-    AccountCodeSetupListener onCodeSetupListener;
+    private List<Account> currentAccounts;
+    private AccountClickListener onItemListener;
+    private AccountCodeSetupListener onCodeSetupListener;
+    private boolean showCodes = false;
 
     public AuthenticatorsListAdapter(LiveData<List<Account>> accountDao, LifecycleOwner lifecycleOwner) {
         // Observer für Account Änderungen
@@ -57,6 +58,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         Account acc = currentAccounts.get(position);
         holder.issuerTv.setText(acc.issuer);
         holder.accountTv.setText(acc.label);
+        holder.codeGroup.setVisibility(showCodes ? View.VISIBLE : View.GONE);
 
         if(onItemListener != null)
             holder.layout.setOnClickListener(l -> onItemListener.onAccountClick(acc));
@@ -83,9 +85,9 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         return currentAccounts == null ? 0 : currentAccounts.size();
     }
 
-    // todo: show codes
-    public void showCodes(boolean show) {
-
+    public void toggleCodes() {
+        showCodes = !showCodes;
+        notifyItemRangeChanged(0, getItemCount());
     }
 
     public static class AuthenticatorsViewHolder extends RecyclerView.ViewHolder {
@@ -94,6 +96,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         public TextView accountTv;
         public TextView codeTv;
         public ProgressBar validityBar;
+        public Group codeGroup;
 
         public ConstraintLayout layout;
 
@@ -103,7 +106,10 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
             accountTv = itemView.findViewById(R.id.accountTv);
             codeTv = itemView.findViewById(R.id.codeTv);
             validityBar = itemView.findViewById(R.id.validityBar);
+            codeGroup = itemView.findViewById(R.id.codeGroup);
             layout = itemView.findViewById(R.id.item_layout);
+
+            codeGroup.setVisibility(View.GONE);
         }
     }
 }

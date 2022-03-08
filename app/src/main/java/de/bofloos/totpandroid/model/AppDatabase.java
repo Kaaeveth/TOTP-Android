@@ -11,7 +11,7 @@ import androidx.room.RoomDatabase;
  * Room erlaubt keine Zugriffe auf die Datenbank vom UI/Main-Thread aus.
  * {@link de.bofloos.totpandroid.util.EventQueue} stellt eine Nachrichtenschleife für Zugriffe bereit.
  */
-@Database(entities = {Account.class}, version = 1)
+@Database(entities = {Account.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract AccountRepository getAccountRepository();
@@ -24,7 +24,7 @@ public abstract class AppDatabase extends RoomDatabase {
      * */
     public static AppDatabase getInstance(Context cxt){
         if(db == null)
-            db = Room.databaseBuilder(cxt, AppDatabase.class, "otp").build();
+            db = Room.databaseBuilder(cxt, AppDatabase.class, "otp").fallbackToDestructiveMigration().build();
         return db;
     }
 }

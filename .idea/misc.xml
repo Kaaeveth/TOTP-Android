@@ -17,7 +17,7 @@
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/activity_qrscanner_manual.xml" value="0.365625" />
-        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/authenticators_list_item.xml" value="0.67" />
+        <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/authenticators_list_item.xml" value="0.5" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators.xml" value="0.34193840579710144" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators_detail.xml" value="0.36666666666666664" />
         <entry key="..\:/repos/TOTPAndroid/app/src/main/res/layout/fragment_authenticators_edit.xml" value="0.36666666666666664" />

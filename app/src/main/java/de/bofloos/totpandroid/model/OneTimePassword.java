@@ -2,7 +2,6 @@ package de.bofloos.totpandroid.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import org.apache.commons.codec.binary.Base32;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,6 +15,13 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Klass zur Erstellung von One-Time Passwörtern zur Zwei-Faktor-Authentifizierung.
+ *
+ * Die erstellten OTP Generatoren verwenden {@code LiveData} und weitere Hintergrundthreads zur stetigen Berechnung von OTPs.
+ * Diese werden in einem Cache gelegt und sollten mit {@link OneTimePassword#removeOTPGenerator(String)} entfernt werden,
+ * wenn diese nicht mehr benötigt werden.
+ */
 public class OneTimePassword {
 
     private final ScheduledExecutorService otpExecutor;
@@ -37,7 +43,13 @@ public class OneTimePassword {
     }
 
     public static class OTPObserverPayload {
+        /**
+         * Das OneTime-Passwort
+         */
         public String otp;
+        /**
+         * Die Gültigkeit des Passwortes
+         */
         public short timeValid;
 
         public OTPObserverPayload(String otp, short timeValid) {
@@ -46,14 +58,28 @@ public class OneTimePassword {
         }
     }
 
+    /**
+     * Erstellt eine OTP zum gegebenen Account
+     * @param acc Das Konto
+     * @return Das OTP und die Gültigkeit
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     */
     public OTPObserverPayload generateOTP(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
-        byte[] key = new Base32().decode(acc.secret);
         long t = Instant.now().getEpochSecond();
-        String otp = OneTimePassword.generateTOTP(key, t, acc.period, acc.hashAlg);
+        String otp = OneTimePassword.generateTOTP(acc.secret, t, acc.period, acc.hashAlg);
         short valid = (short) (acc.period - t % acc.period);
         return new OTPObserverPayload(otp, valid);
     }
 
+    /**
+     * Erstellt einen Generator, welcher mit der gegebenen Periodendauer des Accounts OTPs berechnet.
+     * Diese werden im Hintergrund berechnet und blockieren somit nicht.
+     * @param acc Das Konto
+     * @return Ein observable LiveData, welches mit der Periodendauer des Kontos neue OTPs erhält.
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     */
     public LiveData<OTPObserverPayload> getTimedOTPGenerator(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
         if(otpObserverStore.containsKey(acc.label)) {
             return otpObserverStore.get(acc.label);
@@ -77,6 +103,12 @@ public class OneTimePassword {
         return otpData;
     }
 
+    /**
+     * Entfernt einen OTP Generator.
+     * Das LiveData Objekt, erstellt mit {@link OneTimePassword#getTimedOTPGenerator(Account)}, erhält keine OTPs mehr.
+     * Wenn kein Generator für das Konto existiert, hat diese Methode kein Effekt.
+     * @param accountLabel Das Label des Kontos, mit welchem der Generator erstellt wurde.
+     */
     public void removeOTPGenerator(String accountLabel) {
         ScheduledFuture<?> x = otpFutureStore.get(accountLabel);
         if(x == null) return;

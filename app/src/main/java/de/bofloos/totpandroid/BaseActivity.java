@@ -1,21 +1,12 @@
 package de.bofloos.totpandroid;
 
 import android.graphics.drawable.ColorDrawable;
-import androidx.annotation.NonNull;
-import androidx.biometric.BiometricPrompt;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
-import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
-import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
-import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK;
 
 /**
  * Basis für alle Aktivitäten.
@@ -25,13 +16,6 @@ import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK;
 public class BaseActivity extends AppCompatActivity {
 
     boolean hideActionBar;
-    static BiometricPrompt.PromptInfo promptInfo;
-    static BiometricPrompt authPrompt;
-
-    //Anzahl der gestarteten Aktivitäten der App.
-    //Wird verwendet um zu bestimmen, wann von einer externen Aktivität in die App gewechselt wird,
-    //um die Authentifizierung durchzuführen.
-    static int startedActivities = 0;
 
     public BaseActivity(){
         this(false);
@@ -52,54 +36,5 @@ public class BaseActivity extends AppCompatActivity {
                     new ColorDrawable(getResources().getColor(R.color.topbar)));
         else
             actionBar.hide();
-
-        setupAuth();
-    }
-
-    private void setupAuth() {
-        if(authPrompt != null)
-            return;
-
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Authentifizierung")
-                .setAllowedAuthenticators(BIOMETRIC_STRONG | DEVICE_CREDENTIAL | BIOMETRIC_WEAK)
-                .build();
-
-        //TODO: handle error
-        authPrompt = new BiometricPrompt(this, ContextCompat.getMainExecutor(this), new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull @NotNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(@NonNull @NotNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(startedActivities == 1) // Benutzer ist von außerhalb in die Anwendung gekommen
-            authPrompt.authenticate(promptInfo);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        startedActivities++;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        startedActivities--;
     }
 }

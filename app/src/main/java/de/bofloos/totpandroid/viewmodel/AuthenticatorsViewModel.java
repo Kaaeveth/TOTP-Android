@@ -1,6 +1,11 @@
 package de.bofloos.totpandroid.viewmodel;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.model.AccountRepository;
@@ -8,10 +13,13 @@ import de.bofloos.totpandroid.model.OTPHashAlgorithms;
 import de.bofloos.totpandroid.model.OneTimePassword;
 import org.apache.commons.codec.binary.Base32;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -127,4 +135,36 @@ public class AuthenticatorsViewModel extends ViewModel {
                 .collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
     }
 
+    /**
+     * Exportiert die, in der Datenbank hinterlegten Konten, als {@code Account[]} serialisiert zur gegebenen URI.
+     * @param fileUri Content-URI zur Datei, diese muss existieren
+     * @param resolver Resolver zum Öffnen der Datei
+     * @param cb Callback für wenn die Datei geschrieben worden ist oder ein Fehler aufgetreten ist
+     */
+    public void exportAccounts(Uri fileUri, ContentResolver resolver, Consumer<Boolean> cb) {
+        LiveData<List<Account>> accountsLiveData = accountRepo.getAllAccounts();
+        Observer<List<Account>> observer = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                try {
+                    OutputStream out = resolver.openOutputStream(fileUri, "w");
+                    ObjectOutputStream accountsWriter = new ObjectOutputStream(out);
+                    Account[] accountsArray = accounts.toArray(new Account[0]);
+                    accountsWriter.writeObject(accountsArray);
+
+                    out.close();
+                    accountsLiveData.removeObserver(this);
+                    cb.accept(true);
+                } catch (IOException e) {
+                    cb.accept(false);
+                }
+            }
+        };
+
+        accountsLiveData.observeForever(observer);
+    }
+
+    public void importAccounts(Uri fileUri, ContentResolver resolver) {
+
+    }
 }

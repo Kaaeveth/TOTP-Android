@@ -13,7 +13,6 @@ import java.io.Serializable;
  * <br>
  * <a href="https://github.com/google/google-authenticator/wiki/Key-Uri-Format">Link</a>
  * <br>
- * <br>
  *
  * Die Anzahl der Ziffern wird ignoriert.
  */

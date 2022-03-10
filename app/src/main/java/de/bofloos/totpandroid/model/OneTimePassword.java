@@ -59,7 +59,7 @@ public class OneTimePassword {
     }
 
     /**
-     * Erstellt eine OTP zum gegebenen Account
+     * Erstellt ein OTP zum gegebenen Account
      * @param acc Das Konto
      * @return Das OTP und die Gültigkeit
      * @throws NoSuchAlgorithmException

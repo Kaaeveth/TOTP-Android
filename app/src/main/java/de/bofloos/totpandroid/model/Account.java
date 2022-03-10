@@ -19,6 +19,8 @@ import java.io.Serializable;
 @Entity
 public class Account implements Serializable {
 
+    private static final long serialVersionUID = 0x1337;
+
     public Account(@NonNull String label, String issuer, byte[] secret, OTPHashAlgorithms hashAlg, short period) {
         this.label = label;
         this.issuer = issuer;

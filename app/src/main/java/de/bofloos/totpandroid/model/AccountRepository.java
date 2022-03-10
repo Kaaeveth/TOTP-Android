@@ -6,6 +6,8 @@ import androidx.room.*;
 import java.io.Serializable;
 import java.util.List;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 @Dao
 public interface AccountRepository extends Serializable {
 
@@ -21,7 +23,7 @@ public interface AccountRepository extends Serializable {
     @Delete
     void deleteAccount(Account acc);
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     void insertAccount(Account acc);
 
     @Update

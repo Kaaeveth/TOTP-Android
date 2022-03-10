@@ -94,7 +94,6 @@ public class AuthenticatorsFragment extends Fragment {
 
         // Accounterstellung behandeln
         if(requestCode != QR_REQUEST_CODE || resultCode != Activity.RESULT_OK || data == null) {
-            showMsg("Fehler: "+resultCode);
             return;
         }
 
@@ -110,16 +109,12 @@ public class AuthenticatorsFragment extends Fragment {
                     ok = viewModel.createAccount(res.getAccount(), res.getIssuer(), new Base32().decode(res.getSecret()));
                 }
                 if(!ok)
-                    showMsg("Das Konto existiert bereits oder der Code ist ungültig");
+                    Util.showMsg("Das Konto existiert bereits oder der Code ist ungültig", requireContext());
                 else
-                    showMsg("Erfolg");
+                    Util.showMsg("Erfolg", requireContext());
             } catch (URISyntaxException e) {
-                showMsg("Ungültiger QR-Code Inhalt");
+                Util.showMsg("Ungültiger QR-Code Inhalt", requireContext());
             }
         });
-    }
-
-    private void showMsg(String msg) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show();
     }
 }

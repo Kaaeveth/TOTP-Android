@@ -50,7 +50,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
     public AuthenticatorsViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View item = inflater.inflate(R.layout.authenticators_list_item, parent, false);
-        return new AuthenticatorsViewHolder(item);
+        return new AuthenticatorsViewHolder(item, showCodes);
     }
 
     @Override
@@ -85,6 +85,10 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
         return currentAccounts == null ? 0 : currentAccounts.size();
     }
 
+    /**
+     * Schaltet die Sichtbarkeit der OTPs in der Liste um.
+     * Standardmäßig werden diese nicht angezeigt
+     */
     public void toggleCodes() {
         showCodes = !showCodes;
         notifyItemRangeChanged(0, getItemCount());
@@ -100,7 +104,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
 
         public ConstraintLayout layout;
 
-        public AuthenticatorsViewHolder(@NonNull @NotNull View itemView) {
+        public AuthenticatorsViewHolder(@NonNull @NotNull View itemView, boolean showCode) {
             super(itemView);
             issuerTv = itemView.findViewById(R.id.issuerTv);
             accountTv = itemView.findViewById(R.id.accountTv);
@@ -109,7 +113,7 @@ public class AuthenticatorsListAdapter extends RecyclerView.Adapter<Authenticato
             codeGroup = itemView.findViewById(R.id.codeGroup);
             layout = itemView.findViewById(R.id.item_layout);
 
-            codeGroup.setVisibility(View.GONE);
+            codeGroup.setVisibility(showCode ? View.VISIBLE : View.GONE);
         }
     }
 }

@@ -11,12 +11,10 @@ import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.model.AccountRepository;
 import de.bofloos.totpandroid.model.OTPHashAlgorithms;
 import de.bofloos.totpandroid.model.OneTimePassword;
+import de.bofloos.totpandroid.util.EventQueue;
 import org.apache.commons.codec.binary.Base32;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 import java.util.function.Consumer;
@@ -79,7 +77,13 @@ public class AuthenticatorsViewModel extends ViewModel {
         String periodRaw = q.get("period");
         short period;
         try {
-            period = TextUtils.isEmpty(periodRaw) ? 30 : Short.parseShort(periodRaw);
+            if(TextUtils.isEmpty(periodRaw))
+                period = 30;
+            else {
+                period = Short.parseShort(periodRaw);
+                if(period <= 0)
+                    return false;
+            }
         } catch (NumberFormatException e) {
             return false;
         }
@@ -136,7 +140,7 @@ public class AuthenticatorsViewModel extends ViewModel {
     }
 
     /**
-     * Exportiert die, in der Datenbank hinterlegten Konten, als {@code Account[]} serialisiert zur gegebenen URI.
+     * Exportiert die, in der Datenbank hinterlegten Konten, als {@code List<Account>} serialisiert zur gegebenen URI.
      * @param fileUri Content-URI zur Datei, diese muss existieren
      * @param resolver Resolver zum Öffnen der Datei
      * @param cb Callback für wenn die Datei geschrieben worden ist oder ein Fehler aufgetreten ist
@@ -149,10 +153,10 @@ public class AuthenticatorsViewModel extends ViewModel {
                 try {
                     OutputStream out = resolver.openOutputStream(fileUri, "w");
                     ObjectOutputStream accountsWriter = new ObjectOutputStream(out);
-                    Account[] accountsArray = accounts.toArray(new Account[0]);
-                    accountsWriter.writeObject(accountsArray);
+                    //Account[] accountsArray = accounts.toArray(new Account[0]);
+                    accountsWriter.writeObject(accounts);
 
-                    out.close();
+                    accountsWriter.close();
                     accountsLiveData.removeObserver(this);
                     cb.accept(true);
                 } catch (IOException e) {
@@ -164,7 +168,30 @@ public class AuthenticatorsViewModel extends ViewModel {
         accountsLiveData.observeForever(observer);
     }
 
-    public void importAccounts(Uri fileUri, ContentResolver resolver) {
+    /**
+     * Importiert die serialisierten Konten aus der gegebenen URI.
+     * Die Konten müssen als {@code List<Account>} serialisiert sein.
+     * @param fileUri URI zur Datei mit den Konten
+     * @param resolver Resolver zum Öffnen der Datei
+     * @param cb Callback für wenn die Konten importiert worden sind oder ein Fehler aufgetreten ist.
+     */
+    public void importAccounts(Uri fileUri, ContentResolver resolver, Consumer<Boolean> cb) {
+        // Zugriff auf die Platte in Hintergrundthread legen
+        EventQueue.getInstance().post(() -> {
+            try {
+                InputStream in = resolver.openInputStream(fileUri);
+                ObjectInputStream accountsReader = new ObjectInputStream(in);
+                List<Account> accounts = (List<Account>) accountsReader.readObject();
+                accountsReader.close();
 
+                for(Account a : accounts) {
+                    accountRepo.insertAccount(a);
+                }
+
+                cb.accept(true);
+            } catch (IOException | ClassNotFoundException e) {
+                cb.accept(false);
+            }
+        });
     }
 }

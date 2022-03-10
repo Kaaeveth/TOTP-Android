@@ -2,6 +2,7 @@ package de.bofloos.totpandroid.util;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -38,5 +39,9 @@ public class Util {
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             Toast.makeText(parent, "Fehler beim Erstellen des Codes", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static void showMsg(String msg, Context ctx) {
+        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show();
     }
 }

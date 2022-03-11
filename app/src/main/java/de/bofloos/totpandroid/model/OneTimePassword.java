@@ -72,6 +72,11 @@ public class OneTimePassword {
         return new OTPObserverPayload(otp, valid);
     }
 
+    public static short getRemainingTime(Account acc) {
+        long t = Instant.now().getEpochSecond();
+        return (short) (acc.period - t % acc.period);
+    }
+
     /**
      * Erstellt einen Generator, welcher mit der gegebenen Periodendauer des Accounts OTPs berechnet.
      * Diese werden im Hintergrund berechnet und blockieren somit nicht.

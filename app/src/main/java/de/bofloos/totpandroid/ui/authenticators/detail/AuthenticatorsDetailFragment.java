@@ -1,6 +1,7 @@
 package de.bofloos.totpandroid.ui.authenticators.detail;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.util.EventQueue;
-import de.bofloos.totpandroid.util.Util;
+import de.bofloos.totpandroid.ui.TimedOTPViewable;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModelFactory;
 import org.jetbrains.annotations.NotNull;
@@ -22,13 +23,14 @@ import org.jetbrains.annotations.NotNull;
  * Use the {@link AuthenticatorsDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AuthenticatorsDetailFragment extends Fragment {
+public class AuthenticatorsDetailFragment extends Fragment implements TimedOTPViewable {
 
     private static final String ARG_ACC = "param1";
 
     private Account acc;
-
-    AuthenticatorsViewModel viewModel;
+    private AuthenticatorsViewModel viewModel;
+    private TextView codeTv;
+    private ProgressBar validityBar;
 
     public AuthenticatorsDetailFragment() {}
 
@@ -65,15 +67,34 @@ public class AuthenticatorsDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_authenticators_detail, container, false);
         TextView issuerTv = v.findViewById(R.id.issuerDetailTv);
         TextView accountTv = v.findViewById(R.id.accountDetailTv);
-        TextView codeTv = v.findViewById(R.id.codeDetailTv);
-        ProgressBar validityBar = v.findViewById(R.id.codeValidityBar);
+        this.codeTv = v.findViewById(R.id.codeDetailTv);
+        this.validityBar = v.findViewById(R.id.codeValidityBar);
+
+        validityBar.setMin(0);
+        validityBar.setMax(acc.period);
+        validityBar.setIndeterminate(false);
 
         issuerTv.setText(acc.issuer);
         accountTv.setText(acc.label);
 
-        Util.setupCodeView(acc, validityBar, codeTv, requireActivity(), getViewLifecycleOwner());
+        setupCodeView();
 
         return v;
+    }
+
+    @Override
+    public void onTick(long sec) {
+        validityBar.setProgress((int) sec);
+    }
+
+    @Override
+    public Account getAccount() {
+        return acc;
+    }
+
+    @Override
+    public void onSetCodeText(String code) {
+        codeTv.setText(code);
     }
 
     @Override

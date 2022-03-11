@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -70,8 +69,11 @@ public class AuthenticatorsFragment extends Fragment {
             Intent detailIntent = AuthenticatorsDetailActivity.newIntent(acc, requireContext());
             startActivity(detailIntent);
         }, false);
-        listAdapter.setOnCodeSetupListener((acc, validityBar, codeTv) ->
-                Util.setupCodeView(acc, validityBar, codeTv, requireActivity(), getViewLifecycleOwner()), true);
+
+        listAdapter.setOnCodeSetupListener((acc, validityBar, codeTv) -> {
+            TimedAccountViewableSetup x = new TimedAccountViewableSetup(requireActivity(), getViewLifecycleOwner());
+            x.onCodeSetup(acc, validityBar, codeTv);
+        }, true);
         authenticatorList.setAdapter(listAdapter);
     }
 

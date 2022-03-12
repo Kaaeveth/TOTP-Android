@@ -24,6 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 public class AuthenticatorsFragment extends Fragment {
 
@@ -71,8 +73,11 @@ public class AuthenticatorsFragment extends Fragment {
         }, false);
 
         listAdapter.setOnCodeSetupListener((acc, validityBar, codeTv) -> {
-            TimedAccountViewableSetup x = new TimedAccountViewableSetup(requireActivity(), getViewLifecycleOwner());
-            x.onCodeSetup(acc, validityBar, codeTv);
+            try {
+                new TimedOTPViewableProgressBarSetup(getViewLifecycleOwner(), acc, validityBar, codeTv);
+            } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+                Util.showMsg("Fehler beim Erstellen des Kontos für "+acc.issuer, requireActivity());
+            }
         }, true);
         authenticatorList.setAdapter(listAdapter);
     }

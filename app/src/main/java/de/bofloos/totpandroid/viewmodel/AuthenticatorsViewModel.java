@@ -89,17 +89,23 @@ public class AuthenticatorsViewModel extends ViewModel {
         }
 
         String algRaw = q.get("algorithm");
-        OTPHashAlgorithms alg = OTPHashAlgorithms.SHA1;
+        OTPHashAlgorithms alg;
         if(!TextUtils.isEmpty(algRaw))
             switch (algRaw) {
+                case "SHA1":
+                    alg = OTPHashAlgorithms.SHA1;
+                    break;
                 case "SHA256":
                     alg = OTPHashAlgorithms.SHA256;
                     break;
                 case "SHA512":
                     alg = OTPHashAlgorithms.SHA512;
                     break;
-                // default ist SHA1 - mit Initialisierung abgedeckt
+                default:
+                    return false;
             }
+        else
+            alg = OTPHashAlgorithms.SHA1;
 
         String issuer = q.get("issuer");
         // Wenn kein Issuer vorhanden, diesen aus dem Label ziehen

@@ -1,54 +1,60 @@
 package de.bofloos.totpandroid.ui;
 
-import android.app.Activity;
 import android.os.CountDownTimer;
 import androidx.lifecycle.*;
 import de.bofloos.totpandroid.model.Account;
 import de.bofloos.totpandroid.model.OneTimePassword;
-import de.bofloos.totpandroid.util.Util;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * Interface für Klassen, welche Updates für TOTPs erhalten und diese zeitlich rendern wollen.
+ * Basis für Klassen, welche Updates für TOTPs erhalten und diese zeitlich rendern wollen.
+ * Ableitende Klassen müssen {@link TimedOTPViewable#setupCodeView()} am Ende ihrer Initialisierung aufrufen.
  */
-public interface TimedOTPViewable {
-    Account getAccount();
-    Activity getActivity();
-    void onSetCodeText(String code);
-    LifecycleOwner getViewLifecycleOwner();
+public abstract class TimedOTPViewable {
 
-    void onTick(long sec);
-    CountDownTimer[] timer = new CountDownTimer[1];
+    private CountDownTimer timer;
+    private Account acc;
+    private LifecycleOwner lo;
+
+    public TimedOTPViewable(Account acc, LifecycleOwner lo) {
+        this.acc = acc;
+        this.lo = lo;
+    }
 
     /**
-     * Erstellt einen TOTP Generator und bindet diesen an die gegebenen View-Elemente
+     * Callback für wenn ein neues OTP bereitsteht.
+     * @param code Das neue OTP
      */
-    default void setupCodeView() {
-        Account acc = getAccount();
-        Activity parent = getActivity();
-        LifecycleOwner lo = getViewLifecycleOwner();
+    protected abstract void onNewCode(String code);
 
-        try {
-            LiveData<OneTimePassword.OTPObserverPayload> generator = OneTimePassword.getInstance().getTimedOTPGenerator(acc);
+    /**
+     * Callback für wenn eine Sekunde von der Gültigkeit abgelaufen ist
+     * @param sec Die restliche Gültigkeit in Sekunden
+     */
+    protected abstract void onTick(long sec);
 
-            generator.observe(lo, otp -> {
-                onSetCodeText(otp.otp);
-                if(timer[0] != null)
-                    timer[0].cancel();
-                timer[0] = new CountDownTimer(OneTimePassword.getRemainingTime(acc) * 1000, 1000) {
-                    @Override
-                    public void onTick(long l) {
-                        TimedOTPViewable.this.onTick(l / 1000);
-                    }
-                    @Override
-                    public void onFinish() {}
-                }.start();
-            });
+    /**
+     * Erstellt einen TOTP Generator und bindet diesen an die gegebenen View-Elemente.
+     * Muss aufgerufen werden, sobald {@link TimedOTPViewable#onNewCode(String)} und {@link TimedOTPViewable#onTick(long)}
+     * betriebsbereit sind.
+     */
+    protected void setupCodeView() throws NoSuchAlgorithmException, InvalidKeyException {
+        LiveData<OneTimePassword.OTPObserverPayload> generator = OneTimePassword.getInstance().getTimedOTPGenerator(acc);
 
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            Util.showMsg("Fehler beim Erstellen des Codes", parent);
-        }
+        generator.observe(lo, otp -> {
+            onNewCode(otp.otp);
+            if(timer != null)
+                timer.cancel();
+            timer = new CountDownTimer(OneTimePassword.getRemainingTime(acc) * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    TimedOTPViewable.this.onTick(l / 1000);
+                }
+                @Override
+                public void onFinish() {}
+            }.start();
+        });
     }
 }

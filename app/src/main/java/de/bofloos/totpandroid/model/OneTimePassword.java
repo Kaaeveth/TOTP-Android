@@ -72,9 +72,9 @@ public class OneTimePassword {
         return new OTPObserverPayload(otp, valid);
     }
 
-    public static short getRemainingTime(Account acc) {
+    public static long getRemainingTime(Account acc) {
         long t = Instant.now().getEpochSecond();
-        return (short) (acc.period - t % acc.period);
+        return acc.period - t % acc.period;
     }
 
     /**

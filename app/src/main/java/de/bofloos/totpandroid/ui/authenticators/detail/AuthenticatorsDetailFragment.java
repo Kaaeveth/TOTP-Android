@@ -1,7 +1,6 @@
 package de.bofloos.totpandroid.ui.authenticators.detail;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -12,25 +11,28 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
+import de.bofloos.totpandroid.ui.authenticators.TimedOTPViewableProgressBarSetup;
 import de.bofloos.totpandroid.util.EventQueue;
-import de.bofloos.totpandroid.ui.TimedOTPViewable;
+import de.bofloos.totpandroid.util.Util;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModelFactory;
 import org.jetbrains.annotations.NotNull;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Fragment für die Details eines Kontos.
  * Use the {@link AuthenticatorsDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AuthenticatorsDetailFragment extends Fragment implements TimedOTPViewable {
+public class AuthenticatorsDetailFragment extends Fragment {
 
     private static final String ARG_ACC = "param1";
 
     private Account acc;
     private AuthenticatorsViewModel viewModel;
-    private TextView codeTv;
-    private ProgressBar validityBar;
+    private TimedOTPViewableProgressBarSetup otpView;
 
     public AuthenticatorsDetailFragment() {}
 
@@ -67,34 +69,19 @@ public class AuthenticatorsDetailFragment extends Fragment implements TimedOTPVi
         View v = inflater.inflate(R.layout.fragment_authenticators_detail, container, false);
         TextView issuerTv = v.findViewById(R.id.issuerDetailTv);
         TextView accountTv = v.findViewById(R.id.accountDetailTv);
-        this.codeTv = v.findViewById(R.id.codeDetailTv);
-        this.validityBar = v.findViewById(R.id.codeValidityBar);
-
-        validityBar.setMin(0);
-        validityBar.setMax(acc.period);
-        validityBar.setIndeterminate(false);
+        TextView codeTv = v.findViewById(R.id.codeDetailTv);
+        ProgressBar validityBar = v.findViewById(R.id.codeValidityBar);
 
         issuerTv.setText(acc.issuer);
         accountTv.setText(acc.label);
 
-        setupCodeView();
+        try {
+            otpView = new TimedOTPViewableProgressBarSetup(getViewLifecycleOwner(), acc, validityBar, codeTv);
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            Util.showMsg("Fehler beim Erstellen des Codes", requireContext());
+        }
 
         return v;
-    }
-
-    @Override
-    public void onTick(long sec) {
-        validityBar.setProgress((int) sec);
-    }
-
-    @Override
-    public Account getAccount() {
-        return acc;
-    }
-
-    @Override
-    public void onSetCodeText(String code) {
-        codeTv.setText(code);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class TimedOTPViewableProgressBarSetup extends TimedOTPViewable {
 
     @Override
     public void onTick(long sec) {
-        validityBar.setProgress((int) sec);
+        validityBar.setProgress((int) sec, true);
     }
 
     @Override

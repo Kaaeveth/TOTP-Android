@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TOTPAndroid</string>
+    <string name="app_name">Bof2FA</string>
     <string name="title_authenticators">Authenticators</string>
     <string name="title_settings">Einstellungen</string>
 

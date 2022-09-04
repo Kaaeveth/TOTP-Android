@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import de.bofloos.totpandroid.R;
 import de.bofloos.totpandroid.model.Account;
-import de.bofloos.totpandroid.ui.authenticators.TimedOTPViewableProgressBarSetup;
+import de.bofloos.totpandroid.ui.authenticators.ProgressBarTimedOTPView;
 import de.bofloos.totpandroid.util.EventQueue;
 import de.bofloos.totpandroid.util.Util;
 import de.bofloos.totpandroid.viewmodel.AuthenticatorsViewModel;
@@ -32,7 +32,7 @@ public class AuthenticatorsDetailFragment extends Fragment {
 
     private Account acc;
     private AuthenticatorsViewModel viewModel;
-    private TimedOTPViewableProgressBarSetup otpView;
+    private ProgressBarTimedOTPView otpView;
 
     public AuthenticatorsDetailFragment() {}
 
@@ -76,7 +76,7 @@ public class AuthenticatorsDetailFragment extends Fragment {
         accountTv.setText(acc.label);
 
         try {
-            otpView = new TimedOTPViewableProgressBarSetup(getViewLifecycleOwner(), acc, validityBar, codeTv);
+            otpView = new ProgressBarTimedOTPView(getViewLifecycleOwner(), acc, validityBar, codeTv);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             Util.showMsg("Fehler beim Erstellen des Codes", requireContext());
         }

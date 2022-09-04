@@ -12,17 +12,24 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.TOTPAndroid">
         <activity
+                android:name=".widget.WidgetConfigurationActivity"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+        <activity
                 android:name=".ui.authenticators.detail.AuthenticatorsDetailActivity"
-                android:exported="true"
+                android:exported="false"
                 android:parentActivityName=".MainActivity"/>
         <activity
                 android:name=".qrscanner.QRScannerActivity"
-                android:exported="true"
+                android:exported="false"
                 android:parentActivityName=".MainActivity">
         </activity>
         <activity
                 android:name=".qrscanner.ManualCodeCreationActivity"
-                android:exported="true"
+                android:exported="false"
                 android:parentActivityName=".MainActivity"/>
         <activity
                 android:name=".MainActivity"
@@ -34,6 +41,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <receiver
+                android:name=".widget.OTPAppWidgetProvider"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/app_widget_provider_info"/>
+        </receiver>
     </application>
 
 </manifest>

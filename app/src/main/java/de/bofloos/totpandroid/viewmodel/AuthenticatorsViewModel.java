@@ -49,7 +49,7 @@ public class AuthenticatorsViewModel extends ViewModel {
 
     /**
      * Erstellt ein neues Konto mittels einer URI.
-     * <a href="https://github.com/google/google-authenticator/wiki/Key-Uri-Format}">Das Format der URI</a>
+     * <a href="https://github.com/google/google-authenticator/wiki/Key-Uri-Format">Das Format der URI</a>
      * <br>
      * Darf nicht vom Main/UI-Thread aufgerufen werden.
      * <br>

@@ -74,7 +74,7 @@ public class AuthenticatorsFragment extends Fragment {
 
         listAdapter.setOnCodeSetupListener((acc, validityBar, codeTv) -> {
             try {
-                new TimedOTPViewableProgressBarSetup(getViewLifecycleOwner(), acc, validityBar, codeTv);
+                new ProgressBarTimedOTPView(getViewLifecycleOwner(), acc, validityBar, codeTv);
             } catch (NoSuchAlgorithmException | InvalidKeyException e) {
                 Util.showMsg("Fehler beim Erstellen des Kontos für "+acc.issuer, requireActivity());
             }

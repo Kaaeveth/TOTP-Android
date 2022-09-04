@@ -12,12 +12,12 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Ein TimedOTPViewable welche den Code in einer TextView und die Gültigkeit in einer ProgressBar angibt.
  */
-public class TimedOTPViewableProgressBarSetup extends TimedOTPViewable {
+public class ProgressBarTimedOTPView extends TimedOTPViewable {
 
     private final TextView codeTv;
     private final ProgressBar validityBar;
 
-    public TimedOTPViewableProgressBarSetup(LifecycleOwner lo, Account acc, ProgressBar validityBar, TextView codeTv)
+    public ProgressBarTimedOTPView(LifecycleOwner lo, Account acc, ProgressBar validityBar, TextView codeTv)
             throws NoSuchAlgorithmException, InvalidKeyException {
         super(acc, lo);
 

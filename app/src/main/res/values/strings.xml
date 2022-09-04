@@ -10,6 +10,10 @@
         Das Format ist nur mit OTPAndroid kompatibel.
     </string>
 
+    <string name="widget_info">
+        Zum Aktualisieren klicken
+    </string>
+
     <string name="authenticators_show_codes">Codes anzeigen/verstecken</string>
     <string name="authenticators_add_code">Konto hinzufügen</string>
 
@@ -27,4 +31,8 @@
     <string name="code_detail_delete">Konto löschen</string>
     <string name="code_detail_edit">Konto bearbeiten</string>
     <string name="code_detail_code_info">CODE FÜR EINMALPASSWORT</string>
+    <string name="not_available">Nicht verfügbar</string>
+    <string name="cancel">Abbrechen</string>
+
+    <string name="widget_id_store_name">app_widget_store</string>
 </resources>

@@ -41,7 +41,7 @@ public abstract class TimedOTPViewable {
      * betriebsbereit sind.
      */
     final public void setupCodeView() throws NoSuchAlgorithmException, InvalidKeyException {
-        LiveData<OneTimePassword.OTPObserverPayload> generator = OneTimePassword.getInstance().getTimedOTPGenerator(acc);
+        LiveData<OneTimePassword.OTPResult> generator = OneTimePassword.getInstance().getTimedOTPGenerator(acc);
 
         generator.observe(lo, otp -> {
             onNewCode(otp.otp);

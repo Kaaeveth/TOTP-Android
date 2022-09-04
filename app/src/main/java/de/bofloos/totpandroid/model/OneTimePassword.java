@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class OneTimePassword {
 
     private final ScheduledExecutorService otpExecutor;
-    private final Map<String, LiveData<OTPObserverPayload>> otpObserverStore;
+    private final Map<String, LiveData<OTPResult>> otpObserverStore;
     private final Map<String, ScheduledFuture<?>> otpFutureStore;
 
     private static OneTimePassword instance;
@@ -42,7 +42,7 @@ public class OneTimePassword {
         return instance;
     }
 
-    public static class OTPObserverPayload {
+    public static class OTPResult {
         /**
          * Das OneTime-Passwort
          */
@@ -52,7 +52,7 @@ public class OneTimePassword {
          */
         public short timeValid;
 
-        public OTPObserverPayload(String otp, short timeValid) {
+        public OTPResult(String otp, short timeValid) {
             this.otp = otp;
             this.timeValid = timeValid;
         }
@@ -65,11 +65,11 @@ public class OneTimePassword {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public OTPObserverPayload generateOTP(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
+    public static OTPResult generateOTP(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
         long t = Instant.now().getEpochSecond();
         String otp = OneTimePassword.generateTOTP(acc.secret, t, acc.period, acc.hashAlg);
         short valid = (short) (acc.period - t % acc.period);
-        return new OTPObserverPayload(otp, valid);
+        return new OTPResult(otp, valid);
     }
 
     public static long getRemainingTime(Account acc) {
@@ -85,16 +85,16 @@ public class OneTimePassword {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public LiveData<OTPObserverPayload> getTimedOTPGenerator(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
+    public LiveData<OTPResult> getTimedOTPGenerator(Account acc) throws NoSuchAlgorithmException, InvalidKeyException {
         if(otpObserverStore.containsKey(acc.label)) {
             return otpObserverStore.get(acc.label);
         }
 
-        MutableLiveData<OTPObserverPayload> otpData = new MutableLiveData<>();
+        MutableLiveData<OTPResult> otpData = new MutableLiveData<>();
         otpObserverStore.put(acc.label, otpData);
 
         // Initiale Berechnung
-        OTPObserverPayload init = generateOTP(acc);
+        OTPResult init = generateOTP(acc);
         otpData.postValue(init);
 
         ScheduledFuture<?> x = otpExecutor.scheduleWithFixedDelay(() -> {

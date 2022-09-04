@@ -1,11 +1,12 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="140dp"
-    android:minHeight="30dp"
+    android:minWidth="120dp"
+    android:minHeight="20dp"
     android:minResizeWidth="80dp"
-    android:minResizeHeight="30dp"
+    android:minResizeHeight="20dp"
     android:resizeMode="horizontal|vertical"
-    android:description="@string/app_name"
+    android:description="@string/widget_description"
     android:widgetCategory="home_screen"
     android:updatePeriodMillis="0"
-    android:configure="de.bofloos.totpandroid.widget.WidgetConfigurationActivity">
+    android:configure="de.bofloos.totpandroid.widget.WidgetConfigurationActivity"
+    android:widgetFeatures="reconfigurable">
 </appwidget-provider>

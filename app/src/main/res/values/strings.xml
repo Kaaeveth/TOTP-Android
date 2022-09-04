@@ -13,6 +13,9 @@
     <string name="widget_info">
         Zum Aktualisieren klicken
     </string>
+    <string name="widget_description">
+        Anzeige für 2FA-Codes
+    </string>
 
     <string name="authenticators_show_codes">Codes anzeigen/verstecken</string>
     <string name="authenticators_add_code">Konto hinzufügen</string>

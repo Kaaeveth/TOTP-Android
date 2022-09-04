@@ -3,8 +3,10 @@ package de.bofloos.totpandroid.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -14,7 +16,6 @@ import de.bofloos.totpandroid.model.OneTimePassword;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
 
 public class OTPAppWidgetProvider extends AppWidgetProvider {
 
@@ -46,11 +47,12 @@ public class OTPAppWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private static void setOTPInRemoteView(Account account, RemoteViews views){
+    private static void fillDataInRemoteView(Account account, RemoteViews views){
         try {
-            String otp = OneTimePassword.generateTOTP(account.secret, Instant.now().getEpochSecond(),
-                    account.period, account.hashAlg);
-            views.setTextViewText(R.id.widgetOtpDisplay, otp);
+            OneTimePassword.OTPResult otpResult = OneTimePassword.generateOTP(account);
+            views.setTextViewText(R.id.widgetOtpDisplay, otpResult.otp);
+            views.setTextViewText(R.id.widgetIssuer, account.issuer);
+            views.setTextViewText(R.id.widgetValidity, String.valueOf(otpResult.timeValid)+"s");
         } catch (InvalidKeyException | NoSuchAlgorithmException ignored){}
         catch (NullPointerException e) {
             views.setTextViewText(R.id.widgetOtpDisplay, "Error");
@@ -66,14 +68,15 @@ public class OTPAppWidgetProvider extends AppWidgetProvider {
         intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
         // Die widgetId des momentanen Widgets - dieses wird aktualisiert
         intent.putExtra("appWidgetIds", new int[]{widgetId});
+        Log.d(OTPAppWidgetProvider.class.getName(), String.valueOf(widgetId));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 ctx,
-                0,
+                widgetId,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_IMMUTABLE
         );
 
-        setOTPInRemoteView(account, views);
+        fillDataInRemoteView(account, views);
         views.setOnClickPendingIntent(R.id.widgetOtpDisplay, pendingIntent);
         return views;
     }

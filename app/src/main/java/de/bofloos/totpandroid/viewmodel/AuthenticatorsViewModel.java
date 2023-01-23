@@ -71,8 +71,13 @@ public class AuthenticatorsViewModel extends ViewModel {
             return false;
 
         String label = uri.getPath().substring(1);
-        if(!Pattern.matches(".+(:|%3A)(%20| )*.+", label))
-            return false;
+        String issuer = q.get("issuer");
+        if(TextUtils.isEmpty(issuer)){
+            if(Pattern.matches(".+(:|%3A)(%20| )*.+", label)){
+                issuer = label.substring(0, label.indexOf(':'));
+            } else
+                return false;
+        }
 
         String periodRaw = q.get("period");
         short period;
@@ -106,12 +111,6 @@ public class AuthenticatorsViewModel extends ViewModel {
             }
         else
             alg = OTPHashAlgorithms.SHA1;
-
-        String issuer = q.get("issuer");
-        // Wenn kein Issuer vorhanden, diesen aus dem Label ziehen
-        // Der RegEx oberhalb garantiert die Existenz eines solchen
-        if(TextUtils.isEmpty(issuer))
-            issuer = label.substring(0, label.indexOf(':'));
 
         return createAccount(label, issuer, new Base32().decode(secret), period, alg);
     }

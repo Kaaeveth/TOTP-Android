@@ -95,7 +95,8 @@ public class AuthenticatorsViewModel extends ViewModel {
 
         String algRaw = q.get("algorithm");
         OTPHashAlgorithms alg;
-        if(!TextUtils.isEmpty(algRaw))
+        if(!TextUtils.isEmpty(algRaw)){
+            algRaw = algRaw.toUpperCase();
             switch (algRaw) {
                 case "SHA1":
                     alg = OTPHashAlgorithms.SHA1;
@@ -109,6 +110,7 @@ public class AuthenticatorsViewModel extends ViewModel {
                 default:
                     return false;
             }
+        }
         else
             alg = OTPHashAlgorithms.SHA1;
 
